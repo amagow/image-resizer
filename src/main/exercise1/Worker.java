@@ -25,16 +25,36 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class Worker {
-    private final Region region = Region.US_WEST_2;
-    private final String bucketName = "comp3358resizebucket7352";
-    private final String inboxQueueName = "comp3358resizequeue7352inbox";
-    private final String outboxQueueName = "comp3358resizequeue7352outbox";
-    private final File imageFolder = new File("workerImages");
+    private final Region region;
+    private final String bucketName;
+    private final String inboxQueueName;
+    private final String outboxQueueName;
+    private final File imageFolder;
     private S3Client s3;
     private SqsClient sqsClient;
 
+    public Worker() {
+        this.region = Region.US_WEST_2;
+        this.bucketName = "comp3358resizebucket7352";
+        this.inboxQueueName = "comp3358resizequeue7352inbox";
+        this.outboxQueueName = "comp3358resizequeue7352outbox";
+        this.imageFolder = new File("workerImages");
+    }
+
+    public Worker(String bucketName, String inboxQueueName, String outboxQueueName, String folderName) {
+        this.region = Region.US_WEST_2;
+        this.bucketName = bucketName;
+        this.inboxQueueName = inboxQueueName;
+        this.outboxQueueName = outboxQueueName;
+        this.imageFolder = new File(folderName);
+    }
+
     public static void main(String[] args) {
-        Worker worker = new Worker();
+        Worker worker;
+        if (args.length == 4)
+            worker = new Worker(args[0], args[1], args[2], args[3]);
+        else
+            worker = new Worker();
         try {
             worker.init();
             List<Message> messages = worker.pollForMessages();

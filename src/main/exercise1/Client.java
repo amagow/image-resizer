@@ -24,18 +24,37 @@ import software.amazon.awssdk.services.sqs.model.*;
 
 
 public class Client {
-    private final Region region = Region.US_WEST_2;
-    private final String bucketName = "comp3358resizebucket7352";
-    private final String inboxQueueName = "comp3358resizequeue7352inbox";
-    private final String outboxQueueName = "comp3358resizequeue7352outbox";
-    private final File imageFolder = new File("images");
+    private final Region region ;
+    private final String bucketName;
+    private final String inboxQueueName;
+    private final String outboxQueueName;
+    private final File imageFolder;
     private S3Client s3;
     private SqsClient sqsClient;
 
+    public Client() {
+        this.region = Region.US_WEST_2;
+        this.bucketName = "comp3358resizebucket7352";
+        this.inboxQueueName = "comp3358resizequeue7352inbox";
+        this.outboxQueueName = "comp3358resizequeue7352outbox";
+        this.imageFolder = new File("images");
+    }
+
+    public Client( String bucketName, String inboxQueueName, String outboxQueueName, String folderName) {
+        this.region = Region.US_WEST_2;
+        this.bucketName = bucketName;
+        this.inboxQueueName = inboxQueueName;
+        this.outboxQueueName = outboxQueueName;
+        this.imageFolder = new File(folderName);
+    }
 
     public static void main(String[] args) {
         try {
-            Client app = new Client();
+            Client app;
+            if (args.length == 4)
+                app = new Client(args[0], args[1], args[2], args[3]);
+            else
+                app = new Client();
             app.init();
             ArrayList<String> uploadedKeys = app.uploadImages();
             app.sendUploadedKeys(uploadedKeys);
