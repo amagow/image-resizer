@@ -1,4 +1,5 @@
-import org.apache.commons.io.FileUtils;
+package exercise1;
+
 import org.apache.commons.io.IOUtils;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
